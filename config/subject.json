@@ -1,28 +1,54 @@
 {
-  "_comment": "Edit this file when specializing the template for a specific subject.",
-
-  "server_name": "uefi-mcp-template",
-  "subject_name": "Template Subject",
-  "course_name": "Template Course",
+  "_comment": "Licenciatura em Pedagogia — curso de segundo ciclo da UFABC, acessado a partir da LEILA. Nível: curso (não disciplina).",
+  "server_name": "uefi-mcp-pedagogia",
+  "subject_name": "Licenciatura em Pedagogia",
+  "course_name": "Licenciatura em Pedagogia",
+  "course_code": null,
   "institution": "UFABC",
   "language": "pt-BR",
-
   "features": {
     "image_interpretation": false,
     "symbolic_math": false,
     "circuit_editing": false,
-    "code_execution": false
+    "code_execution": false,
+    "curriculum_navigation": true,
+    "pdf_reading": true
   },
-
-  "difficulty_levels": ["easy", "medium", "hard"],
-  "exercise_styles": ["multiple_choice", "open_answer", "proof", "practical"],
-
-  "content_sections": ["syllabus", "bibliography", "exams", "exercises", "notes", "media"],
-
+  "difficulty_levels": [
+    "easy",
+    "medium",
+    "hard"
+  ],
+  "exercise_styles": [
+    "multiple_choice",
+    "open_answer",
+    "proof",
+    "practical"
+  ],
+  "content_sections": [
+    "syllabus",
+    "bibliography",
+    "exams",
+    "exercises",
+    "notes",
+    "media"
+  ],
   "metadata": {
-    "credits": null,
+    "degree_type": "licenciatura_segundo_ciclo",
+    "prerequisite_course": "LEILA",
+    "total_credits_approx": null,
+    "ppc_version": null,
+    "ppc_versions_available": [],
+    "calendar_system": "quadrimestral",
+    "duration_years": null,
+    "year": 2026,
     "semester": null,
-    "professor": null,
-    "year": null
+    "professor": null
+  },
+  "level": "course",
+  "origin": {
+    "repository": "https://github.com/uefiabece/uefi-uefimcp",
+    "commit": "8fa9ccb24be21ee3d173f82a07c29b43403efc56",
+    "method": "git clone do template + camada de curso do uefi-uefimcp-bct (PDF, curriculum.py) + verificação stdio do uefi-uefimcp-neuro; materiais acadêmicos não importados"
   }
 }

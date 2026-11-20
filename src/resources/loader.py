@@ -3,6 +3,9 @@ Content loading and indexing utilities.
 
 Scans the /content directory and exposes its contents as MCP resources
 and as searchable text for tools.
+
+PDF support is optional: install with `pip install -e ".[pdf]"` (requires pypdf>=4.0).
+Without it, PDF files in content/ are silently skipped.
 """
 
 from __future__ import annotations
@@ -14,6 +17,13 @@ from mcp import types
 
 # File extensions treated as plain text
 TEXT_EXTENSIONS = {".md", ".txt", ".tex", ".csv", ".json", ".yaml", ".yml"}
+
+try:
+    import pypdf as _pypdf
+    _PDF_SUPPORT = True
+except ImportError:
+    _pypdf = None  # type: ignore[assignment]
+    _PDF_SUPPORT = False
 
 
 class ContentLoader:
@@ -30,14 +40,27 @@ class ContentLoader:
         self._index.clear()
         if not self.root.exists():
             return
+        readable_extensions = TEXT_EXTENSIONS | ({".pdf"} if _PDF_SUPPORT else set())
         for path in self.root.rglob("*"):
-            if path.is_file() and path.suffix in TEXT_EXTENSIONS:
+            if path.is_file() and path.suffix in readable_extensions:
                 # URI: content://<relative-posix-path>
                 key = "content://" + path.relative_to(self.root).as_posix()
                 self._index[key] = path
 
     def _read_text(self, path: Path) -> str:
+        if path.suffix == ".pdf" and _PDF_SUPPORT:
+            return self._read_pdf(path)
         return path.read_text(encoding="utf-8", errors="replace")
+
+    def _read_pdf(self, path: Path) -> str:
+        """Extract plain text from a PDF file using pypdf."""
+        reader = _pypdf.PdfReader(str(path))
+        pages = []
+        for i, page in enumerate(reader.pages):
+            text = page.extract_text() or ""
+            if text.strip():
+                pages.append(f"[Página {i + 1}]\n{text}")
+        return "\n\n".join(pages)
 
     # ------------------------------------------------------------------
     # MCP resource interface
@@ -46,12 +69,18 @@ class ContentLoader:
         self._build_index()  # refresh on each list call
         resources = []
         for uri, path in sorted(self._index.items()):
+            if path.suffix == ".pdf":
+                mime = "application/pdf"
+            elif path.suffix == ".md":
+                mime = "text/markdown"
+            else:
+                mime = "text/plain"
             resources.append(
                 types.Resource(
                     uri=uri,  # type: ignore[arg-type]
                     name=path.name,
                     description=f"Content file: {path.relative_to(self.root).as_posix()}",
-                    mimeType="text/markdown" if path.suffix == ".md" else "text/plain",
+                    mimeType=mime,
                 )
             )
         return resources

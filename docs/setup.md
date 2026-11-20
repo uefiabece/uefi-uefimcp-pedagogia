@@ -63,4 +63,4 @@ claude mcp add uefi-<subject> python -m src.server --cwd /path/to/uefi-<subject>
 ## Verifying the setup
 
 Once connected, ask Claude: *"What tools does the subject MCP expose?"*  
-It should list: `get_syllabus`, `get_bibliography`, `get_past_exams`, `search_content`, `get_notes`, `explain_concept`, `get_topic_outline`, `generate_study_plan`, `get_exercises`, `solve_exercise`, `generate_exercise`.
+It should list: `get_syllabus`, `get_bibliography`, `get_past_exams`, `search_content`, `get_notes`, `explain_concept`, `get_topic_outline`, `generate_study_plan`, `get_exercises`, `solve_exercise`, `generate_exercise`, `generate_flashcards`.
